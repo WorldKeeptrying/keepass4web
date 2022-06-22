@@ -48,22 +48,30 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # KeePass4Web
-
+基於JavaScript 用以在 Chrome , Firefox 等瀏覽器使用的 Web KeePass。
 A mobile-friendly web application which serves KeePass database entries on a web frontend.
 
 Written in Perl and JavaScript.
 
 
 ## FEATURES
+## 新鮮功能
 
 - Users need to authenticate with one of the auth backends (LDAP, Htpasswd, SQL, ...) before they can open a database
 - Server can fetch databases from various locations (Filesystem, Seafile, Dropbox, ...)
+- 密碼庫可以是來自網盤的文件
 - Either all users get access to the same database or each user gets access to his/her own
+- 
 - Doesn't save master password, uses a new and unique encryption key to cache the database
+- 不會存儲你的 密碼庫主管密碼 ，創建新會話後僅會緩存你的密碼庫表面。
 - Caches encrypted databases in shared memory (so it works with multiple web server workers)
+- 密碼庫表面存儲在你瀏覽器本地的閃存空間(Flash) 當中，不會傳輸到其他任何地方。
 - Encryption key is stored in the kernel keyring and therefore doesn't swap to disk
+- 密碼庫不會自動存儲到你的任何一個硬碟，軟盤，或者USB 設備當中 （除非你允許它這樣做）
 - Passwords, protected fields and files are encrypted separately (also the ones in history). The web server only decrypts requested information. This way other passwords don't stay in memory in plain text and don't leave the server
+- 所有文件（包括歷史文件）不會存儲在 服務器日誌或者服務器閃存 當中。
 - Server revokes encryption keys after a configurable user idle time, effectively removing access to the cached database
+- 在 服務器 重新裝配 之後，會清除已經緩存的所有的 過去曾經打開過的 密碼庫
 - Web interface offers entry search and access to files stored inside the database. Also displays custom entry icons
 - Highly configurable
 
@@ -75,6 +83,7 @@ Below is a list of required packages and modules to run the application.
 For installation follow [INSTALL](#install).
 
 ##### Libraries / Packages
+##### 必須使用的 依賴文件
 
 - build-essential *(building XS modules)*
 - libkeyutils-dev
@@ -131,13 +140,15 @@ To build the JavaScript part you will also need npm (version 3+ recommended, els
 
 
 ## INSTALL
-
+## 開始裝配
 Choose one of the following installation methods (from easiest to most difficult):
 
 - From docker image:
+- 透過 docker 鏡像，查閱[鏡像訊息](https://hub.docker.com/repository/docker/lixmal/keepass4web)
 See [DockerHub](https://hub.docker.com/repository/docker/lixmal/keepass4web)
 
 - From Ubuntu PPA (14.04, 16.04, 18.04):
+- 透過 apt PPA源 開始裝配
     - Add the repository, update and install the package (and packages for default backends)
         > sudo add-apt-repository ppa:lixmal/keepass4web
 
@@ -148,6 +159,7 @@ See [DockerHub](https://hub.docker.com/repository/docker/lixmal/keepass4web)
     - Make config changes to `/etc/keepass4web/config_local.yml`
 
 - From deb package (Debian/Ubuntu/...):
+- 透過 deb 文件 進行裝配
     - Install dependencies (also for module installation further below)
         > sudo apt-get install build-essential libkeyutils-dev libkeyutils1 libmagic1 libmagic-dev libapache2-mod-perl2 cpanminus
 
@@ -164,6 +176,7 @@ See [DockerHub](https://hub.docker.com/repository/docker/lixmal/keepass4web)
     - Make changes to `/etc/keepass4web/config_local.yml`
 
 - From dist tar:
+- 用源碼 進行裝配
     - Grab the latest tar from github: https://github.com/lixmal/keepass4web/releases
 
     - Untar it to some directory, e.g. `/opt`
@@ -182,7 +195,7 @@ See [DockerHub](https://hub.docker.com/repository/docker/lixmal/keepass4web)
 
 
 ## BUILDING
-
+## 從源碼層面進行開發
 The minified, bundled file will be written to public/scripts/bundle.js
 
 - Install Node/npm, e.g. for Ubuntu
@@ -202,6 +215,7 @@ The minified, bundled file will be written to public/scripts/bundle.js
 
 
 ## BUNDLING
+## 高階 開發流程
 
 Output will be a `KeePass4Web-{VERSION}.tar.gz` file, which includes all files required to run the app but without the development/build files
 
@@ -267,6 +281,7 @@ Running this app on a web server with mod_perl2 or fcgi is **recommended** but r
 
 
 ##### Running apache2 using mod_perl2/Plack with TLS:
+##### 用apache2 運行 並啓用 TLS 的附加功能 mod_perl2/Plack
 
 Example config default-ssl:
 
